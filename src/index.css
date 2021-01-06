@@ -4,3 +4,15 @@ body {
   max-width: 38rem;
   padding: 2rem;
 }
+
+textarea.jsoneditor-text, .ace-jsoneditor  {
+  min-height: 374px !important;
+}
+.jsoneditor {
+  border: unset !important;
+}
+
+.jsoneditor-menu {
+  display: none;
+
+}
