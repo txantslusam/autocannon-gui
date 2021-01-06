@@ -24,4 +24,12 @@ module.exports = [
       }
     }
   },
+  {
+    test: /\.(svg)$/i,
+    use: [
+      {
+        loader: 'file-loader',
+      },
+    ],
+  },
 ];
