@@ -19,21 +19,12 @@ import {
 } from './MenuElement.styled';
 import colors from "../../utils/styles/colors";
 import {useHistory} from "react-router-dom";
-
-const items = [
-    {
-        id: '1',
-        name: 'Task 1',
-        projectId: '1',
-    },
-    {
-        id: '2',
-        name: 'Task 1',
-        projectId: '2',
-    },
-]
+import {Task} from "../../redux/types";
 
 interface MenuElementProps {
+    id: string;
+    name: string;
+    tasks: Task[];
 }
 
 const iconStyle: CSSProperties = {
@@ -46,7 +37,7 @@ const actionIconsStyle: CSSProperties = {
     fontSize: '1.5rem',
 }
 
-const MenuElement: React.FC<MenuElementProps> = ({ }) => {
+const MenuElement: React.FC<MenuElementProps> = ({ name, id, tasks}) => {
     const history = useHistory();
     const [open, setOpen] = React.useState(true);
 
@@ -56,7 +47,7 @@ const MenuElement: React.FC<MenuElementProps> = ({ }) => {
                 <StyledMenuItem button onClick={() => setOpen(!open)} disableGutters>
                     <LabelContainer>
                         {open ? <KeyboardArrowUpIcon style={iconStyle} /> : <KeyboardArrowDownIcon style={iconStyle} />}
-                        <ListItemText  primary={"New project 1"} secondary={"4 Tasks"}/>
+                        <ListItemText  primary={name} secondary={`${tasks.length} Tasks`}/>
                     </LabelContainer>
                 </StyledMenuItem>
                 <ActionsContainer>
@@ -71,13 +62,13 @@ const MenuElement: React.FC<MenuElementProps> = ({ }) => {
             <Collapse in={open} timeout="auto" unmountOnExit style={{width: '100%'}}>
                 <Divider />
                 <TasksList disablePadding>
-                    {items.map((item, index) => (
-                        <StyledListItem button onClick={() => history.push(`/${item.projectId}/${item.id}`)}>
-                            <StyledListItemText primary={item.name} />
+                    {tasks.map((task, index) => (
+                        <StyledListItem button onClick={() => history.push(`/${id}/${task.id}`)}>
+                            <StyledListItemText primary={task.name} />
                         </StyledListItem>
                     ))}
-                    {items.length && (
-                        <StyledListItem button onClick={() => history.push(`/${1}/results`)}>
+                    {tasks.length && (
+                        <StyledListItem button onClick={() => history.push(`/${id}/results`)}>
                             <StyledListItemText primary="Results" />
                         </StyledListItem>
                     )}

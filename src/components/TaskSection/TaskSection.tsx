@@ -6,6 +6,7 @@ import ParamsSection from "./sections/ParamsSection";
 import BodySection from "./sections/BodySection";
 import HeaderSection from "./sections/HeaderSection";
 import TestParams from "./sections/TestParams";
+import ResultSection from "./sections/ResultSection";
 
 interface TaskSectionProps {
 
@@ -106,7 +107,7 @@ const TaskSection: React.FC<TaskSectionProps> = () => {
                 />
                 <Button onClick={() => console.log('start')} style={{marginLeft: '2rem', padding: '2px 16px'}}variant="contained" color="primary">Start</Button>
             </MethodRequestContainer>
-            <AppBar position="static" style={{marginTop: '1rem'}}>
+            <AppBar position="static" style={{marginTop: '1rem', zIndex: 1}}>
                 <Tabs value={value} onChange={(_, value) => setValue(value)} indicatorColor="secondary" >
                     <Tab label="Params" value="Params" />
                     <Tab label="Header" value="Header" />
@@ -128,6 +129,7 @@ const TaskSection: React.FC<TaskSectionProps> = () => {
                 <TestParams data={testParamsInitialData}/>
             </TabPanel>
             </Card>
+            <ResultSection />
         </TaskSectionContainer>
     );
 }

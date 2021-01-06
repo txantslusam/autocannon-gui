@@ -4,7 +4,10 @@ import {DefaultTheme, ThemeProvider as StyledThemeProvider} from 'styled-compone
 import {createMuiTheme, Theme, ThemeProvider, Typography} from '@material-ui/core';
 import {red} from "@material-ui/core/colors";
 import colors from "./utils/styles/colors";
+import './index.css';
 import Layout from "./components/Layout/Layout";
+import { Provider } from "react-redux";
+import store from './redux/store';
 
 const theme = createMuiTheme({
     palette: {
@@ -32,11 +35,13 @@ const styledTheme: DefaultTheme = {
 };
 
 function render() {
-    ReactDOM.render(<ThemeProvider<Theme> theme={theme}>
+    ReactDOM.render(<Provider store={store}>
+            <ThemeProvider<Theme> theme={theme}>
         <StyledThemeProvider theme={styledTheme}>
             <Layout />
         </StyledThemeProvider>
-    </ThemeProvider>, document.body);
+    </ThemeProvider>
+    </Provider>, document.body);
 }
 
 render();

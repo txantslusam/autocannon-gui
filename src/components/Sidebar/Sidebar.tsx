@@ -14,13 +14,19 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import MenuElement from "../MenuElement/MenuElement";
 import {
-    BrowserRouter as Router,
+    MemoryRouter as Router,
     Switch,
     Route, Redirect,
 } from "react-router-dom";
 import ResultsSection from "../ResultsSection/ResultsSection";
 import TaskSection from "../TaskSection/TaskSection";
 import CoverSection from "./CoverSection";
+import styled from 'styled-components';
+import {Button} from "@material-ui/core";
+import AddIcon from "@material-ui/icons/Add";
+import Modal from '../Modal/Modal';
+import {useSelector} from "react-redux";
+
 interface SidebarProps {
 }
 
@@ -30,6 +36,8 @@ const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
             display: 'flex',
+            flex: 1,
+            height: '100%',
         },
         appBar: {
             transition: theme.transitions.create(['margin', 'width'], {
@@ -85,10 +93,31 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
+const NewProjectButton = styled(Button)`
+  position: fixed;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  background-color: #e0e0e0;
+  width: 282px;
+  :hover {
+    background-color: #d4d4d4;
+  };
+  padding: 1rem;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  text-align: left;
+`;
+
 const SideBar: React.FC<SidebarProps> = ({ }) => {
     const classes = useStyles();
     const theme = useTheme();
+
+    const { projects } = useSelector(state => state.project);
+
     const [open, setOpen] = React.useState(true);
+    const [isModalOpen, setIsModalOpen] = React.useState(false);
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -99,7 +128,7 @@ const SideBar: React.FC<SidebarProps> = ({ }) => {
     };
 
     return (
-        <div className={classes.root}>
+        <div className={classes.root} style={{position: 'relative'}}>
             <Router>
 
             <CssBaseline />
@@ -108,6 +137,7 @@ const SideBar: React.FC<SidebarProps> = ({ }) => {
                 className={clsx(classes.appBar, {
                     [classes.appBarShift]: open,
                 })}
+                style={{zIndex: 2}}
             >
                 <Toolbar>
                     <IconButton
@@ -140,13 +170,15 @@ const SideBar: React.FC<SidebarProps> = ({ }) => {
                 </div>
                 <Divider />
                 <List component="div" disablePadding>
-                    {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
+                    {projects.map((project) => (
                             <>
-                                <MenuElement />
+                                <MenuElement key={project.id} name={project.name} id={project.id} tasks={project.tasks}/>
                                 <Divider />
                             </>
                         ))}
+                    <div style={{height: 64, width: '100%'}}/>
                 </List>
+                <NewProjectButton startIcon={<AddIcon/>} onClick={() => setIsModalOpen(true)}>New Project</NewProjectButton>
             </Drawer>
             <main
                 className={clsx(classes.content, {
@@ -166,6 +198,7 @@ const SideBar: React.FC<SidebarProps> = ({ }) => {
                     </Route>
                 </Switch>
             </main>
+                <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}/>
             </Router>
         </div>
     );
