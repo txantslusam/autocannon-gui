@@ -13,6 +13,8 @@ export interface Param {
 export interface Task {
     id: string;
     name: string;
+    method?: string;
+    url?: string;
     header?: Param[];
     body?: JSON;
     params?: Param[];
@@ -34,6 +36,9 @@ export const SET_PROJECTS = 'SET_PROJECTS';
 export const EDIT_PROJECT = 'EDIT_PROJECT';
 export const ADD_PROJECT = 'ADD_PROJECT';
 export const REMOVE_PROJECT = 'REMOVE_PROJECT';
+export const ADD_TASK = 'ADD_TASK';
+export const REMOVE_TASK = 'REMOVE_TASK';
+export const EDIT_TASK = 'EDIT_TASK';
 
 export interface SetProjectsAction {
     type: typeof SET_PROJECTS;
@@ -55,4 +60,25 @@ export interface RemoveProjectAction {
     payload: string;
 }
 
-export type ProjectAction = SetProjectsAction | EditProjectAction | AddProjectAction | RemoveProjectAction;
+export interface AddTaskAction {
+    type: typeof ADD_TASK;
+    payload: string;
+}
+
+export interface RemoveTaskAction {
+    type: typeof REMOVE_TASK;
+    payload: {
+        projectId: string;
+        taskId: string;
+    };
+}
+
+export interface EditTaskAction {
+    type: typeof EDIT_TASK;
+    payload: {
+        projectId: string;
+        task: Task;
+    };
+}
+
+export type ProjectAction = SetProjectsAction | EditProjectAction | AddProjectAction | RemoveProjectAction | AddTaskAction | RemoveTaskAction | EditTaskAction;

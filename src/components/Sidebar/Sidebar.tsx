@@ -13,11 +13,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import MenuElement from "../MenuElement/MenuElement";
-import {
-    MemoryRouter as Router,
-    Switch,
-    Route, Redirect,
-} from "react-router-dom";
+import {MemoryRouter as Router, Route, Switch,} from "react-router-dom";
 import ResultsSection from "../ResultsSection/ResultsSection";
 import TaskSection from "../TaskSection/TaskSection";
 import CoverSection from "./CoverSection";
@@ -198,7 +194,7 @@ const SideBar: React.FC<SidebarProps> = ({ }) => {
                     </Route>
                 </Switch>
             </main>
-                <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}/>
+                <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
             </Router>
         </div>
     );

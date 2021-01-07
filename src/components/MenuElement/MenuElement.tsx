@@ -20,6 +20,8 @@ import {
 import colors from "../../utils/styles/colors";
 import {useHistory} from "react-router-dom";
 import {Task} from "../../redux/types";
+import * as projectActions from '../../redux/actions';
+import {useDispatch} from "react-redux";
 
 interface MenuElementProps {
     id: string;
@@ -39,7 +41,12 @@ const actionIconsStyle: CSSProperties = {
 
 const MenuElement: React.FC<MenuElementProps> = ({ name, id, tasks}) => {
     const history = useHistory();
+    const dispatch = useDispatch();
     const [open, setOpen] = React.useState(true);
+
+    const handleOnAdd = () => {
+        dispatch(projectActions.addTaskToProject(id));
+    }
 
     return (
         <div>
@@ -51,8 +58,8 @@ const MenuElement: React.FC<MenuElementProps> = ({ name, id, tasks}) => {
                     </LabelContainer>
                 </StyledMenuItem>
                 <ActionsContainer>
-                    <StyledIconButton>
-                        <AddIcon style={actionIconsStyle}/>
+                    <StyledIconButton onClick={() => handleOnAdd()}>
+                        <AddIcon style={actionIconsStyle} />
                     </StyledIconButton>
                     <StyledIconButton>
                         <MoreVertIcon style={actionIconsStyle}/>
@@ -67,11 +74,12 @@ const MenuElement: React.FC<MenuElementProps> = ({ name, id, tasks}) => {
                             <StyledListItemText primary={task.name} />
                         </StyledListItem>
                     ))}
-                    {tasks.length && (
+                    {tasks.length
+                     ? (
                         <StyledListItem button onClick={() => history.push(`/${id}/results`)}>
                             <StyledListItemText primary="Results" />
                         </StyledListItem>
-                    )}
+                    ) : null}
                 </TasksList>
             </Collapse>
         </div>

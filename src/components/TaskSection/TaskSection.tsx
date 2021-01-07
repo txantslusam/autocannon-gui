@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {MethodRequestContainer, TaskSectionContainer, InputAddress, SelectMethodRequest } from './TaskSection.styled';
 import {AppBar, Box, Button, createStyles, MenuItem, TextField, withStyles} from "@material-ui/core";
 import {Avatar, Card, CardContent, Tab, Tabs, Typography} from "@material-ui/core";
@@ -7,6 +7,10 @@ import BodySection from "./sections/BodySection";
 import HeaderSection from "./sections/HeaderSection";
 import TestParams from "./sections/TestParams";
 import ResultSection from "./sections/ResultSection";
+import {useDispatch, useSelector} from "react-redux";
+import { useParams } from 'react-router-dom';
+import {Task} from "../../redux/types";
+import * as projectActions from '../../redux/actions';
 
 interface TaskSectionProps {
 
@@ -80,16 +84,45 @@ function TabPanel(props: TabPanelProps) {
 
 
 const TaskSection: React.FC<TaskSectionProps> = () => {
+    const dispatch = useDispatch();
+
     const [value, setValue] = React.useState('Params');
+    const { projects } = useSelector(state => state.project);
+    const { projectId, taskId } = useParams<{ projectId: string, taskId: string }>();
+    const [task, setTask] = useState<Task>();
+
+    useEffect(() => {
+        const currentProject = projects.find(project => project.id === projectId);
+        if (!currentProject) {
+            return undefined;
+        }
+        setTask(currentProject.tasks.find(task => task.id === taskId));
+    }, [projectId, taskId]);
+
+    const handleOnChange = (value: string) => {
+        if (task) {
+            const currentTask = {...task};
+            currentTask.name = value;
+            setTask(currentTask);
+            dispatch(projectActions.editTaskInProject(projectId, currentTask));
+        }
+    }
+
+    if (!task) {
+        return <>This task does not exists</>;
+    }
 
     return (
         <TaskSectionContainer>
             <TextField
+                error={Boolean(!task.name)}
                 placeholder="Enter name"
-                value="Task 1"
+                onChange={event => handleOnChange(event.target.value)}
+                value={task.name}
                 inputProps={{style: {
                     fontSize: '2.5rem',
                 }}}
+                helperText={Boolean(!task.name) ? "Task name must have minimum 1 of length" : ''}
             />
             <MethodRequestContainer>
                 <SelectMethodRequest
