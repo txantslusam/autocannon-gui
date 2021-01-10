@@ -1,16 +1,16 @@
-import React, {useEffect, useMemo, useState} from 'react';
-import {MethodRequestContainer, TaskSectionContainer, InputAddress, SelectMethodRequest } from './TaskSection.styled';
-import {AppBar, Box, Button, createStyles, MenuItem, TextField, withStyles} from "@material-ui/core";
-import {Avatar, Card, CardContent, Tab, Tabs, Typography} from "@material-ui/core";
+import React, {useMemo} from 'react';
+import {InputAddress, MethodRequestContainer, SelectMethodRequest, TaskSectionContainer} from './TaskSection.styled';
+import {AppBar, Box, Button, Card, IconButton, MenuItem, Tab, Tabs, TextField, Typography} from "@material-ui/core";
 import ParamsSection from "./sections/ParamsSection";
 import BodySection from "./sections/BodySection";
 import HeaderSection from "./sections/HeaderSection";
 import TestParams from "./sections/TestParams";
 import ResultSection from "./sections/ResultSection";
 import {useDispatch, useSelector} from "react-redux";
-import { useParams } from 'react-router-dom';
-import {Task} from "../../redux/types";
+import {useHistory, useParams} from 'react-router-dom';
 import * as projectActions from '../../redux/actions';
+import {MoreHoriz} from "@material-ui/icons";
+import Dropdown from "../Dropdown/Dropdown";
 
 interface TaskSectionProps {
 
@@ -85,27 +85,35 @@ function TabPanel(props: TabPanelProps) {
 
 const TaskSection: React.FC<TaskSectionProps> = () => {
     const dispatch = useDispatch();
-
+    const history = useHistory();
     const [value, setValue] = React.useState('Params');
     const { projects } = useSelector(state => state.project);
     const { projectId, taskId } = useParams<{ projectId: string, taskId: string }>();
-    const [task, setTask] = useState<Task>();
 
-    useEffect(() => {
+   const task = useMemo(() => {
         const currentProject = projects.find(project => project.id === projectId);
         if (!currentProject) {
             return undefined;
         }
-        setTask(currentProject.tasks.find(task => task.id === taskId));
-    }, [projectId, taskId]);
+        return currentProject.tasks.find(task => task.id === taskId);
+    }, [projects, projectId, taskId]);
 
-    const handleOnChange = (value: string) => {
-        if (task) {
-            const currentTask = {...task};
-            currentTask.name = value;
-            setTask(currentTask);
-            dispatch(projectActions.editTaskInProject(projectId, currentTask));
-        }
+    const handleOnChangeName = (value: string) => {
+        const currentTask = {...task};
+        currentTask.name = value;
+        dispatch(projectActions.editTaskInProject(projectId, currentTask));
+    }
+
+    const handleOnChangeMethod = (value: string) => {
+        const currentTask = {...task};
+        currentTask.method = value;
+        dispatch(projectActions.editTaskInProject(projectId, currentTask));
+    }
+
+    const handleOnChangeUrl = (value: string) => {
+        const currentTask = {...task};
+        currentTask.url = value;
+        dispatch(projectActions.editTaskInProject(projectId, currentTask));
     }
 
     if (!task) {
@@ -114,10 +122,21 @@ const TaskSection: React.FC<TaskSectionProps> = () => {
 
     return (
         <TaskSectionContainer>
+            <Dropdown
+                projectId={projectId}
+                onClickDelete={() => {dispatch(projectActions.removeTaskInProject(projectId, taskId)); history.push('/')}}
+                taskId={taskId}
+                activator={(
+                <IconButton  style={{fontSize: '3rem', width: '3rem', position: 'absolute', top: '-20px', right: '8px', height: '2.5rem'}}>
+                    <MoreHoriz style={{fontSize: '3rem', width: '3rem'}}/>
+                </IconButton>
+                )}
+            />
+
             <TextField
                 error={Boolean(!task.name)}
                 placeholder="Enter name"
-                onChange={event => handleOnChange(event.target.value)}
+                onChange={event => handleOnChangeName(event.target.value)}
                 value={task.name}
                 inputProps={{style: {
                     fontSize: '2.5rem',
@@ -127,7 +146,10 @@ const TaskSection: React.FC<TaskSectionProps> = () => {
             <MethodRequestContainer>
                 <SelectMethodRequest
                     select
+                    defaultValue={'GET'}
                     variant="outlined"
+                    value={task.method}
+                    onChange={event => handleOnChangeMethod(event.target.value)}
                 >
                     {currencies.map((option) => (
                         <MenuItem key={option.value} value={option.value}>
@@ -137,6 +159,9 @@ const TaskSection: React.FC<TaskSectionProps> = () => {
                 </SelectMethodRequest>
                 <InputAddress
                     variant="outlined"
+                    defaultValue=""
+                    value={task.url || ''}
+                    onChange={event => handleOnChangeUrl(event.target.value)}
                 />
                 <Button onClick={() => console.log('start')} style={{marginLeft: '2rem', padding: '2px 16px'}}variant="contained" color="primary">Start</Button>
             </MethodRequestContainer>
@@ -150,19 +175,19 @@ const TaskSection: React.FC<TaskSectionProps> = () => {
             </AppBar>
             <Card style={{borderRadius: 0, padding: 0}}>
             <TabPanel value={value} index="Params">
-                <ParamsSection />
+                <ParamsSection task={task} projectId={projectId} />
             </TabPanel>
             <TabPanel value={value} index="Header">
-                <HeaderSection />
+                <HeaderSection task={task} projectId={projectId}/>
             </TabPanel>
             <TabPanel value={value} index="Body">
-                <BodySection />
+                <BodySection task={task} projectId={projectId}/>
             </TabPanel>
             <TabPanel value={value} index="Test params">
-                <TestParams data={testParamsInitialData}/>
+                <TestParams task={task} projectId={projectId}/>
             </TabPanel>
             </Card>
-            <ResultSection />
+            {task.results && <ResultSection results={task.results}/>}
         </TaskSectionContainer>
     );
 }

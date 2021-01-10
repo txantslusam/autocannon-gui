@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Button, createStyles, Fade, Modal as MuiModal, TextField, Typography} from '@material-ui/core';
 import {makeStyles, Theme} from "@material-ui/core/styles";
 import {ActionsContainer, ModalBody } from './Modal.styled';
@@ -8,6 +8,8 @@ import * as projectActions from '../../redux/actions';
 interface ModalProps {
     isOpen: boolean;
     onClose: () => void;
+    projectId?: string;
+    initialProjectName?: string;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -27,14 +29,16 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-const Modal: React.FC<ModalProps> = ({isOpen, onClose}) => {
+const Modal: React.FC<ModalProps> = ({isOpen, onClose, initialProjectName, projectId}) => {
     const classes = useStyles();
 
     const { projects } = useSelector(state => state.project);
 
-    const [projectName, setProjectName] = useState<string>('');
+    const [projectName, setProjectName] = useState<string>(initialProjectName || '');
     const [error, setError] = useState<string>('');
-
+    useEffect(() => {
+        setProjectName(initialProjectName);
+    }, [initialProjectName]);
 
     const dispatch = useDispatch();
 
@@ -64,6 +68,14 @@ const Modal: React.FC<ModalProps> = ({isOpen, onClose}) => {
             setError(`Project with name ${projectName.trim()} already exists`);
             return;
         }
+        const currentProject = projects.find(project => project.id === projectId);
+        if (currentProject) {
+            currentProject.name = projectName;
+            dispatch(projectActions.editProject(currentProject));
+            handleOnClose();
+
+            return;
+        }
 
         dispatch(projectActions.addProject(projectName.trim()));
         handleOnClose();
@@ -83,17 +95,19 @@ const Modal: React.FC<ModalProps> = ({isOpen, onClose}) => {
         >
             <Fade in={isOpen}>
                 <ModalBody className={classes.paper}>
-                    <Typography style={{marginBottom: '1rem'}} variant="h5">Create new project</Typography>
+                    <Typography style={{marginBottom: '1rem'}} variant="h5">{initialProjectName ? 'Edit project name' : 'Create new project'}</Typography>
                     <TextField
                         error={Boolean(error)}
                         onChange={event => handleOnChange(event.target.value)}
                         style={{width: '100%'}}
                         label="Name"
                         helperText={error}
+                        autoFocus
+                        value={projectName}
                     />
                     <ActionsContainer>
                         <Button color="primary" style={{marginRight: '1rem'}} onClick={handleOnClose}>CANCEL</Button>
-                        <Button color="primary" onClick={handleOnSave}>SAVE</Button>
+                        <Button type="submit" color="primary" onClick={handleOnSave}>SAVE</Button>
                     </ActionsContainer>
                 </ModalBody>
             </Fade>

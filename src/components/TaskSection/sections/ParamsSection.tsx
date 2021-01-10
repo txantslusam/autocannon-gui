@@ -1,27 +1,34 @@
 import React from 'react';
 import Table from "../../Table/Table";
-import { SectionContainer } from './Section.styled';
+import {SectionContainer} from './Section.styled';
+import {useDispatch} from "react-redux";
+import {Param, Task} from "../../../redux/types";
+import * as projectActions from '../../../redux/actions';
 
 interface ParamsSectionProps {
-
+    projectId: string;
+    task: Task;
 }
 
-let data = [
-    {
-        key: 'Jill',
-        value: 'Smith'
+const ParamsSection: React.FC<ParamsSectionProps> = ({ task, projectId}) => {
+    const dispatch = useDispatch();
 
-    },
-    {
-        key: '',
-        value: ''
-    },
-];
+    const handleOnChangeParams = (params: Param[]) => {
+        const currentTask = {...task};
+        currentTask.params = params;
+        dispatch(projectActions.editTaskInProject(projectId, currentTask));
+    }
 
-const ParamsSection: React.FC<ParamsSectionProps> = () => {
+    if (!task) {
+        return <>Task not found</>
+    }
+
     return (
         <SectionContainer>
-            <Table data={data}/>
+            <Table
+                data={task.params || []}
+                onChange={handleOnChangeParams}
+            />
         </SectionContainer>
     );
 }

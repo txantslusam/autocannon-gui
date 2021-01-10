@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const ModalBody = styled.div`
+export const ModalBody = styled.form`
   padding: 1.5rem 2rem 1rem 2rem;
   min-width: 360px;
 `;

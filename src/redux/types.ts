@@ -1,13 +1,18 @@
-export interface Result {
+export interface Values {
     average: number;
     stdev: number;
     max: number;
+}
+
+export interface Result {
+    request: Values;
+    bytes: Values;
     label: string;
 }
 
 export interface Param {
     key: string;
-    value: string | number;
+    value: string;
 }
 
 export interface Task {
@@ -16,7 +21,7 @@ export interface Task {
     method?: string;
     url?: string;
     header?: Param[];
-    body?: JSON;
+    body?: any;
     params?: Param[];
     testParams?: Param[];
     results?: Result;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import clsx from 'clsx';
 import {createStyles, makeStyles, Theme, useTheme} from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
@@ -13,7 +13,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import MenuElement from "../MenuElement/MenuElement";
-import {MemoryRouter as Router, Route, Switch,} from "react-router-dom";
+import {MemoryRouter as Router, Route, Switch, useParams,} from "react-router-dom";
 import ResultsSection from "../ResultsSection/ResultsSection";
 import TaskSection from "../TaskSection/TaskSection";
 import CoverSection from "./CoverSection";
@@ -22,6 +22,7 @@ import {Button} from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import Modal from '../Modal/Modal';
 import {useSelector} from "react-redux";
+import store from "../../redux/store";
 
 interface SidebarProps {
 }
@@ -114,6 +115,7 @@ const SideBar: React.FC<SidebarProps> = ({ }) => {
 
     const [open, setOpen] = React.useState(true);
     const [isModalOpen, setIsModalOpen] = React.useState(false);
+    const [currentSelection, setCurrentSelection] = useState('');
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -168,7 +170,7 @@ const SideBar: React.FC<SidebarProps> = ({ }) => {
                 <List component="div" disablePadding>
                     {projects.map((project) => (
                             <>
-                                <MenuElement key={project.id} name={project.name} id={project.id} tasks={project.tasks}/>
+                                <MenuElement onClick={setCurrentSelection} currentSelection={currentSelection} key={project.id} name={project.name} id={project.id} tasks={project.tasks}/>
                                 <Divider />
                             </>
                         ))}
@@ -194,7 +196,7 @@ const SideBar: React.FC<SidebarProps> = ({ }) => {
                     </Route>
                 </Switch>
             </main>
-                <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+                {isModalOpen &&<Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />}
             </Router>
         </div>
     );

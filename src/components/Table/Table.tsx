@@ -1,26 +1,39 @@
 import React, {useEffect, useState} from 'react';
-import {StyledHeaderCell, StyledTable, TableRow, StyledInputCell } from './Table.styled';
+import {StyledHeaderCell, StyledTable, TableRow } from './Table.styled';
 import TableCell from "./TableCell";
+import {Param} from "../../redux/types";
 
 export interface TableProps {
-    data: any;
+    data: Param[];
+    onChange?: (data: Param[]) => void;
 }
 
 export interface SelectedCell {
     rowId: number;
-    columnKey: string;
+    columnKey: 'key' | 'value';
+}
+
+function initData(data: Param[]) {
+    const currentData = [...data];
+    const newEmptyRow = {key: '', value: ''};
+    if (!data.length) {
+        return [newEmptyRow];
+    }
+    const lastRow = data[data.length-1];
+    if (lastRow.key && lastRow.value) {
+        currentData.push(newEmptyRow);
+    }
+    return currentData;
 }
 
 const Table = (props: TableProps) => {
-    const { data } = props;
+    const { data, onChange } = props;
     const [selectedCell, setSelectedCell] = useState<SelectedCell | null>(null);
-    const [tableData, setTableData] = useState(data);
+    const [tableData, setTableData] = useState<Param[]>([]);
 
     useEffect(() => {
-        if (!data.length) {
-            setTableData([{key: '', value: ''}]);
-        }
-    }, []);
+        setTableData(initData(data));
+    }, [data]);
 
     const handleOnClick = (cell: SelectedCell) => {
         setSelectedCell(cell)
@@ -31,26 +44,26 @@ const Table = (props: TableProps) => {
         const currentTableData = [...tableData];
         currentTableData[cell.rowId][cell.columnKey] = value;
         setTableData(currentTableData);
+        onChange(currentTableData);
     }
 
     const handleOnBlurLastTableRow = (cell: SelectedCell, value: string) => {
         setSelectedCell(null);
-        const newRowElement: {[key: string]: string} = {};
+        let newRowElement: Param | undefined;
         if (Object.values(tableData[cell.rowId]).every(value => !value) && value !== '') {
-            Object.keys(tableData[cell.rowId]).forEach(key => {
-                newRowElement[key] = ''
-            });
+            newRowElement = {key: '', value: ''};
         }
 
 
         const currentTableData = [...tableData];
         currentTableData[cell.rowId][cell.columnKey] = value;
 
-        if (newRowElement[cell.columnKey] === '') {
+        if (newRowElement) {
             currentTableData.push(newRowElement);
         }
 
         setTableData(currentTableData);
+        onChange(currentTableData);
     }
 
     return (
@@ -60,7 +73,7 @@ const Table = (props: TableProps) => {
                 <StyledHeaderCell>KEY</StyledHeaderCell>
                 <StyledHeaderCell>VALUE</StyledHeaderCell>
             </TableRow>
-                {tableData.map((item: any, index: number) => (
+                {tableData.map((item: Param, index: number) => (
                     <TableRow isSelected={selectedCell?.rowId === index}>
                         <StyledHeaderCell style={{width: '2rem'}}/>
                          <TableCell
@@ -68,7 +81,7 @@ const Table = (props: TableProps) => {
                              rowId={index}
                              columnKey="key"
                              onClick={handleOnClick}
-                             value={item['key']}
+                             value={item.key}
                              onBlur={index === tableData.length -1 ? handleOnBlurLastTableRow : handleOnBlur}
                          >
                          </TableCell>
@@ -77,7 +90,7 @@ const Table = (props: TableProps) => {
                             rowId={index}
                             columnKey="value"
                             onClick={handleOnClick}
-                            value={item['value']}
+                            value={item.value}
                             onBlur={index === tableData.length -1 ? handleOnBlurLastTableRow : handleOnBlur}
                         >
                         </TableCell>

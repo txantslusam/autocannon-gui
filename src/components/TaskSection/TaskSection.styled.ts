@@ -7,6 +7,7 @@ export const TaskSectionContainer = styled.div`
   width: 100%;
   float: bottom;
   padding: 1.5rem;
+  position: relative;
 `;
 
 export const ChooseTaskContainer = styled.div`

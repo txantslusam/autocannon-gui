@@ -9,3 +9,6 @@ textarea.jsoneditor-text, .ace-jsoneditor  {
   display: none;
 
 }
+.ace_gutter {
+  z-index: 1;
+}

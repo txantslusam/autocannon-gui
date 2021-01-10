@@ -5,7 +5,7 @@ import useOnClickOutside from "../../utils/hooks/useOnClickOutside";
 
 interface TableCellProps {
     rowId: number;
-    columnKey: string;
+    columnKey: 'key' | 'value';
     isSelected?: boolean;
     onClick: (cell: SelectedCell) => void;
     onBlur: (cell: SelectedCell, value: string) => void;

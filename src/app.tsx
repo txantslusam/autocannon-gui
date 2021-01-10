@@ -8,6 +8,8 @@ import './index.css';
 import Layout from "./components/Layout/Layout";
 import { Provider } from "react-redux";
 import store from './redux/store';
+import {saveStoreToFile} from "./utils/utls";
+import throttle from 'lodash.throttle';
 
 const theme = createMuiTheme({
     palette: {
@@ -43,5 +45,9 @@ function render() {
     </ThemeProvider>
     </Provider>, document.body);
 }
+
+store.subscribe(throttle(() => {
+    saveStoreToFile(store.getState().project.projects)
+}, 1000))
 
 render();

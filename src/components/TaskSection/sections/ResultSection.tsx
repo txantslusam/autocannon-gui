@@ -2,12 +2,13 @@ import React from 'react';
 import {ResultsLabel, ResultTitle } from './Section.styled';
 import {Card, TableBody, TableCell, TableHead, TableRow, Typography} from "@material-ui/core";
 import { Table } from '@material-ui/core';
+import {Result} from "../../../redux/types";
 
 interface ResultSectionProps {
-
+    results: Result;
 }
 
-const ResultSection: React.FC<ResultSectionProps> = () => {
+const ResultSection: React.FC<ResultSectionProps> = ({results}) => {
     return (
         <>
         <ResultTitle variant="h4">Results</ResultTitle>
@@ -22,19 +23,19 @@ const ResultSection: React.FC<ResultSectionProps> = () => {
                     <TableBody>
                         <TableRow>
                             <TableCell style={{fontWeight: 500}}>REQUESTS PER SECONDS</TableCell>
-                            <TableCell align="right">1212</TableCell>
-                            <TableCell align="right">1212</TableCell>
-                            <TableCell align="right">1212</TableCell>
+                            <TableCell align="right">{results.request.average}</TableCell>
+                            <TableCell align="right">{results.request.stdev}</TableCell>
+                            <TableCell align="right">{results.request.max}</TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell style={{fontWeight: 500}}>BYTES PER SECONDS</TableCell>
-                            <TableCell align="right">1212</TableCell>
-                            <TableCell align="right">1212</TableCell>
-                            <TableCell align="right">1212</TableCell>
+                            <TableCell align="right">{results.request.average}</TableCell>
+                            <TableCell align="right">{results.request.stdev}</TableCell>
+                            <TableCell align="right">{results.request.max}</TableCell>
                         </TableRow>
                     </TableBody>
                 </Table>
-                <ResultsLabel variant="subtitle1" >251k requests in 10.05s, 27.9 MB read</ResultsLabel>
+                <ResultsLabel variant="subtitle1" >{results.label}</ResultsLabel>
             </Card>
         </>
     );

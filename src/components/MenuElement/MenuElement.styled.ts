@@ -1,12 +1,19 @@
-import styled from 'styled-components';
+import styled, {css} from 'styled-components';
 import {Button, List, ListItem, ListItemText} from "@material-ui/core";
 import {remCalc} from "../../utils/styles/utils";
 
-export const StyledMenuItem = styled(ListItem)`
+export const StyledMenuItem = styled(ListItem)<StyledItem>`
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 0;
+  :hover {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+
+  ${({isSelected}) => isSelected && css`
+    background-color: rgba(0, 0, 0, 0.08);
+  `}
 `;
 
 export const LabelContainer = styled.div`
@@ -22,9 +29,21 @@ export const TasksList = styled(List)`
   width: 100%;
 `;
 
-export const StyledListItem = styled(ListItem)`
+interface StyledItem {
+    isSelected?: boolean;
+}
+
+export const StyledListItem = styled(ListItem)<StyledItem>`
   width: 100%;
   padding: 0.75rem ${remCalc(22)}rem;
+  
+  ${({isSelected}) => isSelected && css`
+    background-color: rgba(0, 0, 0, 0.08);
+  `}
+  
+  :hover {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
 `;
 
 export const StyledListItemText = styled(ListItemText)`
@@ -49,16 +68,50 @@ export const ProjectContainer = styled.div`
   height: 100%;
 `;
 
-export const StyledIconButton = styled(Button)`
+interface StyledButtonProps {
+  isSelected?: boolean;
+  borderBottom?: boolean;
+  fullWidth?: boolean;
+}
+
+export const StyledIconButton = styled(Button)<StyledButtonProps>`
   display: flex;
   min-width: unset;
   align-items: center;
   justify-content: center;
   border-radius: 0;
-  height: 50%;
   padding: 0.25rem;
-  :first-child {
-    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
-  }
-`
+  height: 54px;
+  ${({isSelected}) => isSelected && css`
+    background-color: rgba(0, 0, 0, 0.08);
+  `}
 
+  ${({fullWidth}) => fullWidth && css`
+    width: 100%;
+    height: 100%;
+  `}
+  
+  ${({borderBottom}) => borderBottom && css`
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  `} 
+
+  :hover {
+    background-color: rgba(0, 0, 0, 0.10);
+  }
+  
+`;
+
+export const StyledListItemContainer = styled.div<StyledItem>`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  
+  ${({isSelected}) => isSelected && css`
+    background-color: rgba(0, 0, 0, 0.08);
+  `}
+  
+  :hover {
+    background-color: rgba(0, 0, 0, 0.10);
+  }
+`;

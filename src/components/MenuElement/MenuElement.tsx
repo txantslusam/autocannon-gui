@@ -1,4 +1,4 @@
-import React, {CSSProperties} from 'react';
+import React, {CSSProperties, useMemo, useState} from 'react';
 import ListItemText from "@material-ui/core/ListItemText";
 import {Collapse} from "@material-ui/core";
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
@@ -21,12 +21,16 @@ import colors from "../../utils/styles/colors";
 import {useHistory} from "react-router-dom";
 import {Task} from "../../redux/types";
 import * as projectActions from '../../redux/actions';
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
+import Dropdown from "../Dropdown/Dropdown";
+import Modal from "../Modal/Modal";
 
 interface MenuElementProps {
     id: string;
     name: string;
     tasks: Task[];
+    currentSelection: string;
+    onClick: (id: string) => void;
 }
 
 const iconStyle: CSSProperties = {
@@ -39,49 +43,94 @@ const actionIconsStyle: CSSProperties = {
     fontSize: '1.5rem',
 }
 
-const MenuElement: React.FC<MenuElementProps> = ({ name, id, tasks}) => {
+const MenuElement: React.FC<MenuElementProps> = ({ name, id, tasks, currentSelection, onClick }) => {
     const history = useHistory();
     const dispatch = useDispatch();
     const [open, setOpen] = React.useState(true);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const { projects } = useSelector(state => state.project);
 
     const handleOnAdd = () => {
         dispatch(projectActions.addTaskToProject(id));
     }
 
+    const handleOnClickMenuElement = (taskId: string) => {
+        if (currentSelection !== taskId) {
+            onClick(taskId);
+            history.push(`/${id}/${taskId}`);
+        }
+    }
+
+    const handleOnClickResultsElement = (projectId: string) => {
+        if (currentSelection !== projectId) {
+            onClick(projectId);
+            history.push(`/${id}/results`);
+        }
+    }
+
+
+    const selectedIdCloseProject = useMemo(() => {
+        if (open) {
+            return '';
+        }
+        if (currentSelection === id) {
+            return id;
+        }
+        const selectedProject = projects.find(project => project.id === id);
+
+        if (!selectedProject) {
+            return '';
+        }
+
+        if (selectedProject.tasks.some(task => task.id === currentSelection)) {
+            return id;
+        }
+
+    }, [currentSelection, projects, id, open]);
+
     return (
         <div>
             <ProjectContainer>
-                <StyledMenuItem button onClick={() => setOpen(!open)} disableGutters>
+                <StyledMenuItem isSelected={selectedIdCloseProject === id} button onClick={() => setOpen(!open)} disableGutters>
                     <LabelContainer>
                         {open ? <KeyboardArrowUpIcon style={iconStyle} /> : <KeyboardArrowDownIcon style={iconStyle} />}
                         <ListItemText  primary={name} secondary={`${tasks.length} Tasks`}/>
                     </LabelContainer>
                 </StyledMenuItem>
                 <ActionsContainer>
-                    <StyledIconButton onClick={() => handleOnAdd()}>
+                    <StyledIconButton fullWidth onClick={() => handleOnAdd()} isSelected={selectedIdCloseProject === id} borderBottom>
                         <AddIcon style={actionIconsStyle} />
                     </StyledIconButton>
-                    <StyledIconButton>
-                        <MoreVertIcon style={actionIconsStyle}/>
-                    </StyledIconButton>
+                    <Dropdown
+                        fullWidth
+                        projectId={id}
+                        onClickEditName={() => {setIsModalOpen(true)} }
+                        onClickDelete={() => dispatch(projectActions.removeProject(id))}
+                        activator={(
+                        <StyledIconButton fullWidth isSelected={selectedIdCloseProject === id}>
+                            <MoreVertIcon style={actionIconsStyle}/>
+                        </StyledIconButton>
+                        )}
+                    />
                 </ActionsContainer>
             </ProjectContainer>
             <Collapse in={open} timeout="auto" unmountOnExit style={{width: '100%'}}>
                 <Divider />
                 <TasksList disablePadding>
                     {tasks.map((task, index) => (
-                        <StyledListItem button onClick={() => history.push(`/${id}/${task.id}`)}>
+                        <StyledListItem isSelected={task.id === currentSelection} button onClick={() => handleOnClickMenuElement(task.id)}>
                             <StyledListItemText primary={task.name} />
                         </StyledListItem>
                     ))}
                     {tasks.length
                      ? (
-                        <StyledListItem button onClick={() => history.push(`/${id}/results`)}>
+                        <StyledListItem isSelected={id === currentSelection} button onClick={() => handleOnClickResultsElement(id)}>
                             <StyledListItemText primary="Results" />
                         </StyledListItem>
                     ) : null}
                 </TasksList>
             </Collapse>
+            {isModalOpen && <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} initialProjectName={name} projectId={id}/>}
         </div>
     );
 }

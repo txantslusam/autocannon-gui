@@ -64,7 +64,8 @@ const projectReducer: Reducer<ProjectState, ProjectAction> = (state = initialSta
                 const currentProjects = [...state.projects];
                 const newTask: Task = {
                     id: uuid(),
-                    name: `New task ${currentProjects[projectToAddTaskIndex].tasks.length + 1}`
+                    name: `New task ${currentProjects[projectToAddTaskIndex].tasks.length + 1}`,
+                    method: 'GET',
                 }
                 currentProjects[projectToAddTaskIndex].tasks = [...currentProjects[projectToAddTaskIndex].tasks, newTask];
                 return {
