@@ -10,6 +10,21 @@ interface TestParamsProps {
     projectId: string;
 }
 
+const initialTestParams: Param[] = [
+    {
+        key: 'duration',
+        value: '100'
+    },
+    {
+        key: 'pipelining',
+        value: '1'
+    },
+    {
+        key: 'duration',
+        value: '30'
+    },
+]
+
 const TestParams: React.FC<TestParamsProps> = ({ projectId, task }) => {
     const dispatch = useDispatch();
 
@@ -26,7 +41,7 @@ const TestParams: React.FC<TestParamsProps> = ({ projectId, task }) => {
     return (
         <SectionContainer>
             <Table
-                data={task.testParams || []}
+                data={task.testParams || initialTestParams}
                 onChange={handleOnChangeTestParams}
             />
         </SectionContainer>
