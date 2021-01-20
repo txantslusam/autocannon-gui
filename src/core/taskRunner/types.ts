@@ -13,3 +13,13 @@ export interface TestParams {
   connections: number;
   timeout: number;
 }
+
+export interface TaskProgress {
+  isDone: boolean;
+  progress?: number;
+}
+
+export interface TaskProgressActionPayload {
+  task: Task;
+  progress: TaskProgress;
+}

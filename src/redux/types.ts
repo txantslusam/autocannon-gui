@@ -1,5 +1,5 @@
 import autocannon from 'autocannon';
-import { TestParams } from '../core/taskRunner/types';
+import { TaskProgress, TestParams } from '../core/taskRunner/types';
 
 export interface Values {
   average: number;
@@ -20,6 +20,7 @@ export interface Param<T = Record<string, any>> {
 
 export interface Task {
   id: string;
+  projectId: string;
   name: string;
   method?: 'GET' | 'OPTIONS' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
   url?: string;
@@ -28,6 +29,7 @@ export interface Task {
   params?: Param[];
   testParams?: Param<TestParams>[];
   results?: autocannon.Result;
+  progress?: TaskProgress;
 }
 
 export interface Project {

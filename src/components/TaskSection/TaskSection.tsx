@@ -1,12 +1,12 @@
 import React, { useMemo } from 'react';
 import {
-  AppBar, Box, Button, Card, IconButton, MenuItem, Tab, Tabs, TextField, Typography,
+  AppBar, Box, Button, Card, IconButton, LinearProgress, MenuItem, Tab, Tabs, TextField, Typography,
 } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import { MoreHoriz } from '@material-ui/icons';
 import {
-  InputAddress, MethodRequestContainer, SelectMethodRequest, TaskSectionContainer,
+  InputAddress, MethodRequestContainer, ProgressBarContainer, SelectMethodRequest, TaskSectionContainer,
 } from './TaskSection.styled';
 import ParamsSection from './sections/ParamsSection';
 import BodySection from './sections/BodySection';
@@ -94,7 +94,10 @@ const TaskSection: React.FC = () => {
 
   const handleOnStart = async () => {
     const currentTask = { ...task };
-    currentTask.results = await window.api.runTask({ projectId, task });
+    currentTask.results = undefined;
+    dispatch(projectActions.editTaskInProject(projectId, currentTask));
+
+    currentTask.results = await window.api.runTask({ projectId, task: currentTask });
     dispatch(projectActions.editTaskInProject(projectId, currentTask));
   };
 
@@ -150,8 +153,13 @@ const TaskSection: React.FC = () => {
           value={task.url || ''}
           onChange={event => handleOnChange('url', event.target.value)}
         />
-        <Button onClick={handleOnStart} style={{ marginLeft: '2rem', padding: '2px 16px' }} variant="contained" color="primary">Start</Button>
+        <Button onClick={handleOnStart} style={{ marginLeft: '2rem', padding: '2px 16px' }} variant="contained" color="primary" disabled={!!task.progress?.progress}>Start</Button>
       </MethodRequestContainer>
+      {typeof task.progress?.progress !== 'undefined' && (
+        <ProgressBarContainer>
+          <LinearProgress variant="determinate" value={task.progress.progress * 100} />
+        </ProgressBarContainer>
+      )}
       <AppBar position="static" style={{ marginTop: '1rem', zIndex: 1 }}>
         <Tabs value={selectedTab} onChange={(_, value) => setSelectedTab(value)} indicatorColor="secondary">
           <Tab label="Test params" value="Test params" />

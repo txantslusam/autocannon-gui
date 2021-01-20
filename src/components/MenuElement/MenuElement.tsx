@@ -1,8 +1,9 @@
 import React, { CSSProperties, useMemo, useState } from 'react';
 import ListItemText from '@material-ui/core/ListItemText';
-import { Collapse } from '@material-ui/core';
+import { CircularProgress, Collapse } from '@material-ui/core';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
+import DoneIcon from '@material-ui/icons/Done';
 import AddIcon from '@material-ui/icons/Add';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 
@@ -18,6 +19,7 @@ import {
   StyledListItemText,
   StyledMenuItem,
   TasksList,
+  ItemProgress,
 } from './MenuElement.styled';
 import colors from '../../utils/styles/colors';
 import { Task } from '../../redux/types';
@@ -135,6 +137,12 @@ const MenuElement: React.FC<MenuElementProps> = ({
               onClick={() => handleOnClickMenuElement(task.id)}
             >
               <StyledListItemText primary={task.name} />
+              {task.progress && (
+              <ItemProgress>
+                {task.progress.progress && <CircularProgress variant="determinate" value={task.progress.progress * 100} />}
+                {task.progress.isDone && <DoneIcon />}
+              </ItemProgress>
+              )}
             </StyledListItem>
           ))}
           {tasks.length

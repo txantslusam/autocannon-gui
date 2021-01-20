@@ -41,21 +41,23 @@ const ResultSection: React.FC<ResultSectionProps> = ({ results }) => (
             <TableCell align="right">{results.requests.p97_5}</TableCell>
             <TableCell align="right">{results.requests.average}</TableCell>
             <TableCell align="right">{results.requests.stddev}</TableCell>
-            <TableCell align="right">{results.requests.min}</TableCell>
+            <TableCell align="right">{results.requests.max}</TableCell>
           </TableRow>
           <TableRow>
             <TableCell style={{ fontWeight: 500 }}>BYTES PER SECONDS</TableCell>
-            <TableCell align="right">{results.throughput.p1}</TableCell>
-            <TableCell align="right">{results.throughput.p2_5}</TableCell>
-            <TableCell align="right">{results.throughput.p50}</TableCell>
-            <TableCell align="right">{results.throughput.p97_5}</TableCell>
-            <TableCell align="right">{results.throughput.average}</TableCell>
-            <TableCell align="right">{results.throughput.stddev}</TableCell>
-            <TableCell align="right">{results.throughput.min}</TableCell>
+            <TableCell align="right">{prettyBytes(results.throughput.p1)}</TableCell>
+            <TableCell align="right">{prettyBytes(results.throughput.p2_5)}</TableCell>
+            <TableCell align="right">{prettyBytes(results.throughput.p50)}</TableCell>
+            <TableCell align="right">{prettyBytes(results.throughput.p97_5)}</TableCell>
+            <TableCell align="right">{prettyBytes(results.throughput.average)}</TableCell>
+            <TableCell align="right">{prettyBytes(results.throughput.stddev)}</TableCell>
+            <TableCell align="right">{prettyBytes(results.throughput.min)}</TableCell>
           </TableRow>
         </TableBody>
       </Table>
-
+      <br />
+      <hr />
+      <br />
       <Table>
         <TableHead>
           <TableCell>STATISTICS</TableCell>
@@ -80,9 +82,11 @@ const ResultSection: React.FC<ResultSectionProps> = ({ results }) => (
           </TableRow>
         </TableBody>
       </Table>
-
+      <br />
+      <hr />
+      <br />
       <ResultsLabel variant="subtitle1">
-        { results.non2xx && (
+        { !!results.non2xx && (
         <>
           {`${results['2XX']} 2xx responses, ${results.non2xx} responses: ${results['1XX']} 1xx, ${results['3XX']} 3xx, ${results['4XX']} 4xx, ${results['5XX']} 5xx.}`}
           <br />
@@ -90,19 +94,19 @@ const ResultSection: React.FC<ResultSectionProps> = ({ results }) => (
         )}
         {`${results.requests.sent} requests in ${results.duration}s, ${prettyBytes(results.throughput.total)} read`}
         <br />
-        {results.errors && (
+        {!!results.errors && (
         <>
           {`${format(results.errors)}  errors (${format(results.timeouts)}) timeouts)`}
           <br />
         </>
         )}
-        {results.mismatches && (
+        {!!results.mismatches && (
         <>
           {`${format(results.mismatches)} requests with mismatched body`}
           <br />
         </>
         )}
-        {results.resets && (
+        {!!results.resets && (
         <>
           {`Request pipeline was resetted ${format(results.resets)} ${results.resets === 1 ? 'time' : 'times'}`}
           <br />

@@ -56,6 +56,13 @@ export const StyledListItemText = styled(ListItemText)`
   }
 `;
 
+export const ItemProgress = styled.span`
+  position: absolute;
+  top: 50%;
+  right: 4px;
+  transform: translateY(-50%);
+`;
+
 export const ActionsContainer = styled.div`
   display: flex;
   flex-direction: column;

@@ -49,3 +49,5 @@ export const InputAddress = withStyles({
     },
   },
 })(TextField);
+
+export const ProgressBarContainer = styled.div``;
