@@ -4,7 +4,8 @@ import {
 } from '@material-ui/core';
 import autocannon from 'autocannon';
 import prettyBytes from 'pretty-bytes';
-import { ResultsLabel, ResultTitle } from './Section.styled';
+import { ChartsArea, ResultsLabel, ResultTitle } from './Section.styled';
+import { HdrChart } from '../../charts/hdr';
 
 function format(num: number) {
   if (num < 1000) {
@@ -113,6 +114,24 @@ const ResultSection: React.FC<ResultSectionProps> = ({ results }) => (
         </>
         )}
       </ResultsLabel>
+
+      <ChartsArea>
+        <HdrChart data={[{
+          name: 'Requests per second',
+          data: results.requests,
+        }]}
+        />
+        <HdrChart data={[{
+          name: 'Bytes per second',
+          data: results.throughput,
+        }]}
+        />
+        <HdrChart data={[{
+          name: 'Latency',
+          data: results.latency,
+        }]}
+        />
+      </ChartsArea>
     </Card>
   </>
 );

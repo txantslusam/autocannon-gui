@@ -101,6 +101,7 @@
   "dependencies": {
     "@material-ui/core": "^4.11.2",
     "@material-ui/icons": "^4.11.2",
+    "@types/chart.js": "^2.9.29",
     "@types/react-router-dom": "^5.1.7",
     "autocannon": "git+https://github.com/txantslusam/autocannon.git",
     "chart.js": "^2.9.4",
