@@ -1,56 +1,56 @@
 import React from 'react';
-import {SectionContainer} from "./Section.styled";
-import Table from "../../Table/Table";
-import {Param, Task} from "../../../redux/types";
-import {useDispatch} from "react-redux";
-import * as projectActions from "../../../redux/actions";
-import {TestParams} from "../../../core/taskRunner/types";
+import { useDispatch } from 'react-redux';
+import { SectionContainer } from './Section.styled';
+import Table from '../../Table/Table';
+import { Param, Task } from '../../../redux/types';
+import * as projectActions from '../../../redux/actions';
+import { TestParams } from '../../../core/taskRunner/types';
 
 interface TestParamsProps {
-    task: Task;
-    projectId: string;
+  task: Task;
+  projectId: string;
 }
 
 const initialTestParams: Param<TestParams>[] = [
-    {
-        key: 'duration',
-        value: 30
-    },
-    {
-        key: 'connections',
-        value: 100
-    },
-    {
-        key: 'pipelining',
-        value: 1
-    },
-    {
-        key: 'timeout',
-        value: 10
-    },
-]
+  {
+    key: 'duration',
+    value: 30,
+  },
+  {
+    key: 'connections',
+    value: 100,
+  },
+  {
+    key: 'pipelining',
+    value: 1,
+  },
+  {
+    key: 'timeout',
+    value: 10,
+  },
+];
 
-const TestParams: React.FC<TestParamsProps> = ({ projectId, task }) => {
-    const dispatch = useDispatch();
+const TestParamsSection: React.FC<TestParamsProps> = ({ projectId, task }) => {
+  const dispatch = useDispatch();
 
-    const handleOnChangeTestParams = (params: Param<TestParams>[]) => {
-        const currentTask = {...task};
-        currentTask.testParams = params;
-        dispatch(projectActions.editTaskInProject(projectId, currentTask));
-    }
+  const handleOnChangeTestParams = (params: Param<TestParams>[]) => {
+    const currentTask = { ...task };
+    currentTask.testParams = params;
+    dispatch(projectActions.editTaskInProject(projectId, currentTask));
+  };
 
-    if (!task) {
-        return <>Task not found</>
-    }
+  if (!task) {
+    return <>Task not found</>;
+  }
 
-    return (
-        <SectionContainer>
-            <Table<TestParams>
-                data={task.testParams || initialTestParams}
-                onChange={handleOnChangeTestParams}
-            />
-        </SectionContainer>
-    );
-}
+  return (
+    <SectionContainer>
+      <Table<TestParams>
+        data={task.testParams || initialTestParams}
+        onChange={handleOnChangeTestParams}
+      />
+    </SectionContainer>
+  );
+};
 
-export default TestParams;
+export default TestParamsSection;

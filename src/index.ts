@@ -19,7 +19,7 @@ const createWindow = (): void => {
       nodeIntegration: true,
       contextIsolation: true,
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
-    }
+    },
   });
 
   // and load the index.html of the app.
@@ -39,7 +39,6 @@ app.on('ready', createWindow);
 // explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
-
     app.quit();
   }
 });

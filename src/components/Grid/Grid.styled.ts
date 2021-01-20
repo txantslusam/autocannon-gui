@@ -35,7 +35,7 @@ export const GridContainer = styled.div<GridContainerProps>`
   `}
 
 
-  ${(props) => props.fullWidth && css`
+  ${props => props.fullWidth && css`
     ${rwd[Breakpoint.SMALL]`
       max-width: none;
     `}
@@ -64,7 +64,7 @@ export const GridColumn = styled.div<GridColumnProps>`
   flex-direction: column;
   flex: 1;
 
-  ${(props) => props.center && css`
+  ${props => props.center && css`
     align-items: center;
   `}
 `;

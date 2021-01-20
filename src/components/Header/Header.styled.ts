@@ -1,6 +1,6 @@
-import styled, {css} from 'styled-components';
-import {hexToRGB} from "../../utils/styles/utils";
-import {Typography} from "@material-ui/core";
+import styled, { css } from 'styled-components';
+import { Typography } from '@material-ui/core';
+import { hexToRGB } from '../../utils/styles/utils';
 
 export const BackgroundContainer = styled.div`
   top: 0;

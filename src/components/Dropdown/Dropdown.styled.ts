@@ -1,11 +1,11 @@
-import styled, { css } from "styled-components";
-import {hexToRGB, remCalc} from "../../utils/styles/utils";
+import styled, { css } from 'styled-components';
+import { remCalc } from '../../utils/styles/utils';
 import colors from '../../utils/styles/colors';
 
 export const Wrapper = styled.div<{fullWidth?: boolean}>`
   position: relative;
   height: 100%;
-  ${({fullWidth}) => fullWidth && '100%'};
+  ${({ fullWidth }) => fullWidth && '100%'};
 `;
 
 export const DropdownButton = styled.button`
@@ -42,7 +42,7 @@ export const DropdownContainer = styled.div<DropdownContainerProps>`
   border-radius: ${remCalc(11)}rem 0 ${remCalc(11)}rem ${remCalc(11)}rem;
   box-shadow: ${remCalc(2)}rem ${remCalc(4)}rem ${remCalc(6)}rem ${colors.black06};
 
-  ${(props) => props.isOpen && css`
+  ${props => props.isOpen && css`
     display: flex;
   `}
 `;

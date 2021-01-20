@@ -1,16 +1,16 @@
 export const specializations: string[] = [
-    'Bieganie',
-    'Pływanie',
-    'Siłownia',
-    'Taniec',
-    'Piłka nożna',
-    'Kolarstwo'
+  'Bieganie',
+  'Pływanie',
+  'Siłownia',
+  'Taniec',
+  'Piłka nożna',
+  'Kolarstwo',
 ];
 
 export const cities: string[] = [
-    'Bydgoszcz',
-    'Kraków',
-    'Poznań',
-    'Toruń',
-    'Warszawa',
+  'Bydgoszcz',
+  'Kraków',
+  'Poznań',
+  'Toruń',
+  'Warszawa',
 ];

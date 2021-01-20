@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import {TextField, withStyles} from "@material-ui/core";
+import { TextField, withStyles } from '@material-ui/core';
 
 export const TaskSectionContainer = styled.div`
   display: flex;
@@ -26,27 +26,26 @@ export const MethodRequestContainer = styled.div`
 `;
 
 export const SelectMethodRequest = withStyles({
-    root: {
-        '& .MuiOutlinedInput-root': {
-            borderBottomRightRadius: 'unset',
-            borderTopRightRadius: 'unset',
-            borderRight: 'unset',
-        },
-        '&': {
-            minWidth: '8rem',
-        }
+  root: {
+    '& .MuiOutlinedInput-root': {
+      borderBottomRightRadius: 'unset',
+      borderTopRightRadius: 'unset',
+      borderRight: 'unset',
     },
+    '&': {
+      minWidth: '8rem',
+    },
+  },
 })(TextField);
 
 export const InputAddress = withStyles({
-    root: {
-        '& .MuiOutlinedInput-root': {
-            borderBottomLeftRadius: 'unset',
-            borderTopLeftRadius: 'unset',
-        },
-        '&': {
-            width: '100%',
-        },
+  root: {
+    '& .MuiOutlinedInput-root': {
+      borderBottomLeftRadius: 'unset',
+      borderTopLeftRadius: 'unset',
     },
+    '&': {
+      width: '100%',
+    },
+  },
 })(TextField);
-

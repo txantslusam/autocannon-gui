@@ -15,7 +15,8 @@
       "*": ["node_modules/*"]
     },
     "types": [
-      "./src/autocannon.d.ts"
+      "./src/autocannon.d.ts",
+      "./src/types.d.ts"
     ]
   },
   "include": [

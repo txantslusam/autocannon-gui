@@ -1,19 +1,18 @@
 import styled from 'styled-components';
-import {Button} from "@material-ui/core";
-import {remCalc} from "../../utils/styles/utils";
+import { Button } from '@material-ui/core';
 
 export const StyledTable = styled.table`
   width: 100%;
   border-collapse: collapse;
 `;
 
-interface TableRow {
-    isSelected?: boolean;
+interface TableRowProps {
+  isSelected?: boolean;
 }
 
-export const TableRow = styled.tr<TableRow>`
-  color: ${({theme}) => theme.colors.darkGrey02};
-  background-color: ${({isSelected}) => isSelected &&  '#fafafa'};
+export const TableRow = styled.tr<TableRowProps>`
+  color: ${({ theme }) => theme.colors.darkGrey02};
+  background-color: ${({ isSelected }) => isSelected && '#fafafa'};
 `;
 
 export const StyledHeaderCell = styled.th`

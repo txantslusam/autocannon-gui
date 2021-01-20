@@ -1,9 +1,9 @@
-import {Project} from "../redux/types";
+import { Project } from '../redux/types';
 
 export function saveStoreToFile(projects: Project[]) {
-    return window.api.saveStoreToFile(projects);
+  return window.api.saveStoreToFile(projects);
 }
 
 export function readStoreFile() {
-    return window.api.readStoreFile();
+  return window.api.readStoreFile();
 }
