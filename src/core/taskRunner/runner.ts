@@ -1,7 +1,7 @@
 import autocannon from 'autocannon';
 import { ipcMain, IpcMainInvokeEvent } from 'electron';
 import { TaskRunnerParameters } from './types';
-import { assignTestParams } from './utils';
+import { assignBody, assignHeaders, assignTestParams } from './utils';
 import { taskProgressUpdateAction } from './action';
 
 function getProgress(start: number, duration: number) {
@@ -16,6 +16,8 @@ export async function run(event: IpcMainInvokeEvent, { task }: TaskRunnerParamet
     };
 
     assignTestParams(task, options);
+    assignHeaders(task, options);
+    assignBody(task, options);
 
     const start = (new Date()).getTime();
     const instance = autocannon(options, (e, results) => {

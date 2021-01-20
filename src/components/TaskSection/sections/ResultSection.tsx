@@ -20,7 +20,6 @@ interface ResultSectionProps {
 
 const ResultSection: React.FC<ResultSectionProps> = ({ results }) => (
   <>
-    <ResultTitle variant="h4">Results</ResultTitle>
     <Card style={{ margin: '1rem 0' }}>
       <Table>
         <TableHead>
@@ -89,7 +88,8 @@ const ResultSection: React.FC<ResultSectionProps> = ({ results }) => (
       <ResultsLabel variant="subtitle1">
         { !!results.non2xx && (
         <>
-          {`${results['2XX']} 2xx responses, ${results.non2xx} responses: ${results['1XX']} 1xx, ${results['3XX']} 3xx, ${results['4XX']} 4xx, ${results['5XX']} 5xx.}`}
+          {/* @ts-ignore */}
+          {`${results['2xx']} 2xx responses, ${results.non2xx} responses: ${results['1xx']} 1xx, ${results['3xx']} 3xx, ${results['4xx']} 4xx, ${results['5xx']} 5xx.`}
           <br />
         </>
         )}

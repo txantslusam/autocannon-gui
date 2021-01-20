@@ -14,7 +14,7 @@ interface TestParamsProps {
 const initialTestParams: Param<TestParams>[] = [
   {
     key: 'duration',
-    value: 30,
+    value: 10,
   },
   {
     key: 'connections',

@@ -6,33 +6,13 @@ import { colorGenerator } from '../../utils/getRandomColor';
 
 interface Props {
   title?: string;
-  data: HdrChartData;
+  data: BarChartData;
 }
 
-export type HdrChartData = Array<{
-  name: string;
-  data: Histogram,
-}>;
-
-function getHdrData(data: Histogram) {
-  return [
-    data.p0_001,
-    data.p0_01,
-    data.p0_1,
-    data.p1,
-    data.p2_5,
-    data.p10,
-    data.p25,
-    data.p50,
-    data.p75,
-    data.p90,
-    data.p97_5,
-    data.p99,
-    data.p99_9,
-    data.p99_99,
-    data.p99_999,
-  ];
-}
+export type BarChartData = {
+  labels: string[];
+  values: number[],
+};
 
 function getGradientFill(ctx: CanvasRenderingContext2D, color: string) {
   const gradientFill = ctx.createLinearGradient(0, 0, 0, 400);
@@ -41,7 +21,7 @@ function getGradientFill(ctx: CanvasRenderingContext2D, color: string) {
   return gradientFill;
 }
 
-export const HdrChart: React.FC<Props> = ({ data, title }) => {
+export const BarChart: React.FC<Props> = ({ data, title }) => {
   const canvasRef = React.useRef<HTMLCanvasElement | null>();
   const chartRef = React.useRef<Chart | null>();
 
@@ -52,24 +32,24 @@ export const HdrChart: React.FC<Props> = ({ data, title }) => {
 
     if (!ctx) return;
 
-    chartRef.current = new Chart(canvasRef.current, {
-      type: 'line',
-      data: {
-        labels: ['0.001%', '0.01%', '0.1%', '1%', '2.5%', '10%', '25%', '50%', '75%', '90%', '97.5%', '99%', '99.9%', '99.99%', '99.999%'],
-        datasets: data.map((datum, index) => {
-          const randColor = colorGenerator.next().value;
+    const colors = data.values.map((_, index) => (index === 0 ? '#f44336' : colorGenerator.next().value));
 
-          return {
-            label: datum.name,
-            data: getHdrData(datum.data),
-            fill: true,
-            backgroundColor: data.length > 1 ? 'transparent' : getGradientFill(ctx, '#f44336'),
-            borderColor: index === 0 ? '#f44336' : randColor,
-            lineTension: 0.1,
-          };
-        }),
+    chartRef.current = new Chart(canvasRef.current, {
+      type: 'bar',
+      data: {
+        labels: data.labels,
+        datasets: [{
+          data: data.values,
+          fill: true,
+          backgroundColor: colors.map((color: string) => hexToRGB(color, 0.8)),
+          borderColor: colors,
+          lineTension: 0.1,
+        }],
       },
       options: {
+        legend: {
+          display: false,
+        },
         title: {
           display: title?.length > 0 ?? false,
           text: title,

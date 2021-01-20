@@ -16,6 +16,7 @@ import ResultSection from './sections/ResultSection';
 import * as projectActions from '../../redux/actions';
 import Dropdown from '../Dropdown/Dropdown';
 import { Task } from '../../redux/types';
+import { ResultTitle } from './sections/Section.styled';
 
 const methods = [
   {
@@ -98,6 +99,9 @@ const TaskSection: React.FC = () => {
     dispatch(projectActions.editTaskInProject(projectId, currentTask));
 
     currentTask.results = await window.api.runTask({ projectId, task: currentTask });
+    currentTask.progress = {
+      isDone: true,
+    };
     dispatch(projectActions.editTaskInProject(projectId, currentTask));
   };
 
@@ -163,7 +167,7 @@ const TaskSection: React.FC = () => {
       <AppBar position="static" style={{ marginTop: '1rem', zIndex: 1 }}>
         <Tabs value={selectedTab} onChange={(_, value) => setSelectedTab(value)} indicatorColor="secondary">
           <Tab label="Test params" value="Test params" />
-          <Tab label="Params" value="Params" />
+          {/* <Tab label="Params" value="Params" /> */}
           <Tab label="Headers" value="Headers" />
           <Tab label="Body" value="Body" />
         </Tabs>
@@ -172,9 +176,9 @@ const TaskSection: React.FC = () => {
         <TabPanel value={selectedTab} index="Test params">
           <TestParams task={task} projectId={projectId} />
         </TabPanel>
-        <TabPanel value={selectedTab} index="Params">
-          <ParamsSection task={task} projectId={projectId} />
-        </TabPanel>
+        {/* <TabPanel value={selectedTab} index="Params"> */}
+        {/*  <ParamsSection task={task} projectId={projectId} /> */}
+        {/* </TabPanel> */}
         <TabPanel value={selectedTab} index="Headers">
           <HeaderSection task={task} projectId={projectId} />
         </TabPanel>
@@ -182,7 +186,12 @@ const TaskSection: React.FC = () => {
           <BodySection task={task} projectId={projectId} />
         </TabPanel>
       </Card>
-      {task.results && <ResultSection results={task.results} />}
+      {task.results && (
+      <>
+        <ResultTitle variant="h4">Results</ResultTitle>
+        <ResultSection results={task.results} />
+      </>
+      )}
     </TaskSectionContainer>
   );
 };
