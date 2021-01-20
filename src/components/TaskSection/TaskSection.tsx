@@ -11,15 +11,16 @@ import {useHistory, useParams} from 'react-router-dom';
 import * as projectActions from '../../redux/actions';
 import {MoreHoriz} from "@material-ui/icons";
 import Dropdown from "../Dropdown/Dropdown";
+import {Task} from "../../redux/types";
 
-interface TaskSectionProps {
-
-}
-
-const currencies = [
+const methods = [
     {
         value: 'GET',
         label: 'GET',
+    },
+    {
+        value: 'OPTIONS',
+        label: 'OPTIONS',
     },
     {
         value: 'POST',
@@ -30,29 +31,14 @@ const currencies = [
         label: 'PUT',
     },
     {
+        value: 'PATCH',
+        label: 'PATCH',
+    },
+    {
         value: 'DELETE',
         label: 'DELETE',
     },
 ];
-
-const testParamsInitialData = [
-    {
-        key: 'connection',
-        value: '100'
-    },
-    {
-        key: 'pipelining',
-        value: '1'
-    },
-    {
-        key: 'duration',
-        value: '30'
-    },
-    {
-        key: '',
-        value: '',
-    }
-]
 
 interface TabPanelProps {
     children?: React.ReactNode;
@@ -80,13 +66,10 @@ function TabPanel(props: TabPanelProps) {
     );
 }
 
-
-
-
-const TaskSection: React.FC<TaskSectionProps> = () => {
+const TaskSection: React.FC = () => {
     const dispatch = useDispatch();
     const history = useHistory();
-    const [value, setValue] = React.useState('Params');
+    const [selectedTab, setSelectedTab] = React.useState('Test params');
     const { projects } = useSelector(state => state.project);
     const { projectId, taskId } = useParams<{ projectId: string, taskId: string }>();
 
@@ -98,23 +81,17 @@ const TaskSection: React.FC<TaskSectionProps> = () => {
         return currentProject.tasks.find(task => task.id === taskId);
     }, [projects, projectId, taskId]);
 
-    const handleOnChangeName = (value: string) => {
-        const currentTask = {...task};
-        currentTask.name = value;
-        dispatch(projectActions.editTaskInProject(projectId, currentTask));
-    }
+   const handleOnChange = (key: keyof Task, value: any) => {
+       const currentTask = {...task};
+       currentTask[key] = value;
+       dispatch(projectActions.editTaskInProject(projectId, currentTask));
+   }
 
-    const handleOnChangeMethod = (value: string) => {
-        const currentTask = {...task};
-        currentTask.method = value;
-        dispatch(projectActions.editTaskInProject(projectId, currentTask));
-    }
-
-    const handleOnChangeUrl = (value: string) => {
-        const currentTask = {...task};
-        currentTask.url = value;
-        dispatch(projectActions.editTaskInProject(projectId, currentTask));
-    }
+   const handleOnStart = async () => {
+       const currentTask = {...task};
+       currentTask.results = await window.api.runTask({ projectId, task });
+       dispatch(projectActions.editTaskInProject(projectId, currentTask));
+   }
 
     if (!task) {
         return <>This task does not exists</>;
@@ -127,7 +104,7 @@ const TaskSection: React.FC<TaskSectionProps> = () => {
                 onClickDelete={() => {dispatch(projectActions.removeTaskInProject(projectId, taskId)); history.push('/')}}
                 taskId={taskId}
                 activator={(
-                <IconButton  style={{fontSize: '3rem', width: '3rem', position: 'absolute', top: '-20px', right: '8px', height: '2.5rem'}}>
+                <IconButton style={{fontSize: '3rem', width: '3rem', position: 'absolute', top: '-20px', right: '8px', height: '2.5rem'}}>
                     <MoreHoriz style={{fontSize: '3rem', width: '3rem'}}/>
                 </IconButton>
                 )}
@@ -136,12 +113,12 @@ const TaskSection: React.FC<TaskSectionProps> = () => {
             <TextField
                 error={Boolean(!task.name)}
                 placeholder="Enter name"
-                onChange={event => handleOnChangeName(event.target.value)}
+                onChange={event => handleOnChange('name', event.target.value)}
                 value={task.name}
                 inputProps={{style: {
                     fontSize: '2.5rem',
                 }}}
-                helperText={Boolean(!task.name) ? "Task name must have minimum 1 of length" : ''}
+                helperText={!task.name ? "Task name must have minimum 1 of length" : ''}
             />
             <MethodRequestContainer>
                 <SelectMethodRequest
@@ -149,9 +126,9 @@ const TaskSection: React.FC<TaskSectionProps> = () => {
                     defaultValue={'GET'}
                     variant="outlined"
                     value={task.method}
-                    onChange={event => handleOnChangeMethod(event.target.value)}
+                    onChange={event => handleOnChange('method', event.target.value)}
                 >
-                    {currencies.map((option) => (
+                    {methods.map((option) => (
                         <MenuItem key={option.value} value={option.value}>
                             {option.label}
                         </MenuItem>
@@ -161,31 +138,31 @@ const TaskSection: React.FC<TaskSectionProps> = () => {
                     variant="outlined"
                     defaultValue=""
                     value={task.url || ''}
-                    onChange={event => handleOnChangeUrl(event.target.value)}
+                    onChange={event => handleOnChange('url', event.target.value)}
                 />
-                <Button onClick={() => console.log('start')} style={{marginLeft: '2rem', padding: '2px 16px'}}variant="contained" color="primary">Start</Button>
+                <Button onClick={handleOnStart} style={{marginLeft: '2rem', padding: '2px 16px'}} variant="contained" color="primary">Start</Button>
             </MethodRequestContainer>
             <AppBar position="static" style={{marginTop: '1rem', zIndex: 1}}>
-                <Tabs value={value} onChange={(_, value) => setValue(value)} indicatorColor="secondary" >
-                    <Tab label="Params" value="Params" />
-                    <Tab label="Header" value="Header" />
-                    <Tab label="Body" value="Body" />
+                <Tabs value={selectedTab} onChange={(_, value) => setSelectedTab(value)} indicatorColor="secondary" >
                     <Tab label="Test params" value="Test params" />
+                    <Tab label="Params" value="Params" />
+                    <Tab label="Headers" value="Headers" />
+                    <Tab label="Body" value="Body" />
                 </Tabs>
             </AppBar>
             <Card style={{borderRadius: 0, padding: 0}}>
-            <TabPanel value={value} index="Params">
-                <ParamsSection task={task} projectId={projectId} />
-            </TabPanel>
-            <TabPanel value={value} index="Header">
-                <HeaderSection task={task} projectId={projectId}/>
-            </TabPanel>
-            <TabPanel value={value} index="Body">
-                <BodySection task={task} projectId={projectId}/>
-            </TabPanel>
-            <TabPanel value={value} index="Test params">
-                <TestParams task={task} projectId={projectId}/>
-            </TabPanel>
+                <TabPanel value={selectedTab} index="Test params">
+                    <TestParams task={task} projectId={projectId}/>
+                </TabPanel>
+                <TabPanel value={selectedTab} index="Params">
+                    <ParamsSection task={task} projectId={projectId} />
+                </TabPanel>
+                <TabPanel value={selectedTab} index="Headers">
+                    <HeaderSection task={task} projectId={projectId}/>
+                </TabPanel>
+                <TabPanel value={selectedTab} index="Body">
+                    <BodySection task={task} projectId={projectId}/>
+                </TabPanel>
             </Card>
             {task.results && <ResultSection results={task.results}/>}
         </TaskSectionContainer>

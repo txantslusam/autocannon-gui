@@ -9,7 +9,7 @@ import Layout from "./components/Layout/Layout";
 import { Provider } from "react-redux";
 import store from './redux/store';
 import {saveStoreToFile} from "./utils/utls";
-import throttle from 'lodash.throttle';
+import {debounce} from 'lodash';
 
 const theme = createMuiTheme({
     palette: {
@@ -46,7 +46,7 @@ function render() {
     </Provider>, document.body);
 }
 
-store.subscribe(throttle(() => {
+store.subscribe(debounce(() => {
     saveStoreToFile(store.getState().project.projects)
 }, 1000))
 

@@ -3,9 +3,9 @@ import {StyledHeaderCell, StyledTable, TableRow } from './Table.styled';
 import TableCell from "./TableCell";
 import {Param} from "../../redux/types";
 
-export interface TableProps {
-    data: Param[];
-    onChange?: (data: Param[]) => void;
+export interface TableProps<T = Record<string, any>> {
+    data: Param<T>[];
+    onChange?: (data: Param<T>[]) => void;
 }
 
 export interface SelectedCell {
@@ -13,7 +13,7 @@ export interface SelectedCell {
     columnKey: 'key' | 'value';
 }
 
-function initData(data: Param[]) {
+function initData<T = Record<string, any>>(data: Param<T>[]) {
     const currentData = [...data];
     const newEmptyRow = {key: '', value: ''};
     if (!data.length) {
@@ -21,18 +21,18 @@ function initData(data: Param[]) {
     }
     const lastRow = data[data.length-1];
     if (lastRow.key && lastRow.value) {
-        currentData.push(newEmptyRow);
+        currentData.push(newEmptyRow as unknown as Param<T>);
     }
     return currentData;
 }
 
-const Table = (props: TableProps) => {
+function Table<T = Record<string, any>>(props: TableProps<T>) {
     const { data, onChange } = props;
     const [selectedCell, setSelectedCell] = useState<SelectedCell | null>(null);
     const [tableData, setTableData] = useState<Param[]>([]);
 
     useEffect(() => {
-        setTableData(initData(data));
+        setTableData(initData(data) as Param[]);
     }, [data]);
 
     const handleOnClick = (cell: SelectedCell) => {
@@ -44,7 +44,7 @@ const Table = (props: TableProps) => {
         const currentTableData = [...tableData];
         currentTableData[cell.rowId][cell.columnKey] = value;
         setTableData(currentTableData);
-        onChange(currentTableData);
+        onChange(currentTableData as Param<T>[]);
     }
 
     const handleOnBlurLastTableRow = (cell: SelectedCell, value: string) => {
@@ -54,7 +54,6 @@ const Table = (props: TableProps) => {
             newRowElement = {key: '', value: ''};
         }
 
-
         const currentTableData = [...tableData];
         currentTableData[cell.rowId][cell.columnKey] = value;
 
@@ -63,7 +62,7 @@ const Table = (props: TableProps) => {
         }
 
         setTableData(currentTableData);
-        onChange(currentTableData);
+        onChange(currentTableData as Param<T>[]);
     }
 
     return (

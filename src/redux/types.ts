@@ -1,3 +1,6 @@
+import {TestParams} from "../core/taskRunner/types";
+import autocannon from "autocannon";
+
 export interface Values {
     average: number;
     stdev: number;
@@ -10,21 +13,21 @@ export interface Result {
     label: string;
 }
 
-export interface Param {
-    key: string;
-    value: string;
+export interface Param<T = Record<string, any>> {
+    key: keyof T;
+    value: T[keyof T];
 }
 
 export interface Task {
     id: string;
     name: string;
-    method?: string;
+    method?: "GET" | "OPTIONS" | "POST" | "PUT" | "PATCH" | "DELETE";
     url?: string;
     header?: Param[];
     body?: any;
     params?: Param[];
-    testParams?: Param[];
-    results?: Result;
+    testParams?: Param<TestParams>[];
+    results?: autocannon.Result;
 }
 
 export interface Project {

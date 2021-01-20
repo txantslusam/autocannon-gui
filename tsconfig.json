@@ -13,7 +13,10 @@
     "jsx": "react",
     "paths": {
       "*": ["node_modules/*"]
-    }
+    },
+    "types": [
+      "./src/autocannon.d.ts"
+    ]
   },
   "include": [
     "src/**/*"

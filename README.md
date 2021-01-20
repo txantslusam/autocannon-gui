@@ -13,3 +13,9 @@ npm start
 # or
 yarn start
 ```
+
+## Known bugs
+
+### Autocannon can't be parsed -> "#! /usr/bin/env node" is blocking webpack
+
+Comment this line in `./node_modules/autocannon/autocannon.js`.

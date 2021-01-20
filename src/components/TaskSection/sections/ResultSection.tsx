@@ -1,11 +1,20 @@
 import React from 'react';
 import {ResultsLabel, ResultTitle } from './Section.styled';
-import {Card, TableBody, TableCell, TableHead, TableRow, Typography} from "@material-ui/core";
+import {Card, TableBody, TableCell, TableHead, TableRow} from "@material-ui/core";
 import { Table } from '@material-ui/core';
-import {Result} from "../../../redux/types";
+import autocannon from "autocannon";
+import prettyBytes from "pretty-bytes";
+
+function format (num: number) {
+    if (num < 1000) {
+        return '' + num
+    } else {
+        return '' + Math.round(num / 1000) + 'k'
+    }
+}
 
 interface ResultSectionProps {
-    results: Result;
+    results: autocannon.Result;
 }
 
 const ResultSection: React.FC<ResultSectionProps> = ({results}) => {
@@ -16,26 +25,88 @@ const ResultSection: React.FC<ResultSectionProps> = ({results}) => {
                 <Table>
                     <TableHead>
                         <TableCell>STATISTICS</TableCell>
+                        <TableCell align="right">1%</TableCell>
+                        <TableCell align="right">2.5%</TableCell>
+                        <TableCell align="right">50%</TableCell>
+                        <TableCell align="right">97.5%</TableCell>
                         <TableCell align="right">AVERAGE</TableCell>
                         <TableCell align="right">STANDARD DEVIATION</TableCell>
-                        <TableCell align="right">MAXIMUM</TableCell>
+                        <TableCell align="right">MAX</TableCell>
                     </TableHead>
                     <TableBody>
                         <TableRow>
                             <TableCell style={{fontWeight: 500}}>REQUESTS PER SECONDS</TableCell>
-                            <TableCell align="right">{results.request.average}</TableCell>
-                            <TableCell align="right">{results.request.stdev}</TableCell>
-                            <TableCell align="right">{results.request.max}</TableCell>
+                            <TableCell align="right">{results.requests.p1}</TableCell>
+                            <TableCell align="right">{results.requests.p2_5}</TableCell>
+                            <TableCell align="right">{results.requests.p50}</TableCell>
+                            <TableCell align="right">{results.requests.p97_5}</TableCell>
+                            <TableCell align="right">{results.requests.average}</TableCell>
+                            <TableCell align="right">{results.requests.stddev}</TableCell>
+                            <TableCell align="right">{results.requests.min}</TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell style={{fontWeight: 500}}>BYTES PER SECONDS</TableCell>
-                            <TableCell align="right">{results.request.average}</TableCell>
-                            <TableCell align="right">{results.request.stdev}</TableCell>
-                            <TableCell align="right">{results.request.max}</TableCell>
+                            <TableCell align="right">{results.throughput.p1}</TableCell>
+                            <TableCell align="right">{results.throughput.p2_5}</TableCell>
+                            <TableCell align="right">{results.throughput.p50}</TableCell>
+                            <TableCell align="right">{results.throughput.p97_5}</TableCell>
+                            <TableCell align="right">{results.throughput.average}</TableCell>
+                            <TableCell align="right">{results.throughput.stddev}</TableCell>
+                            <TableCell align="right">{results.throughput.min}</TableCell>
                         </TableRow>
                     </TableBody>
                 </Table>
-                <ResultsLabel variant="subtitle1" >{results.label}</ResultsLabel>
+
+                <Table>
+                    <TableHead>
+                        <TableCell>STATISTICS</TableCell>
+                        <TableCell align="right">1%</TableCell>
+                        <TableCell align="right">2.5%</TableCell>
+                        <TableCell align="right">50%</TableCell>
+                        <TableCell align="right">97.5%</TableCell>
+                        <TableCell align="right">AVERAGE</TableCell>
+                        <TableCell align="right">STANDARD DEVIATION</TableCell>
+                        <TableCell align="right">MIN</TableCell>
+                    </TableHead>
+                    <TableBody>
+                        <TableRow>
+                            <TableCell style={{fontWeight: 500}}>Latency</TableCell>
+                            <TableCell align="right">{results.latency.p1}</TableCell>
+                            <TableCell align="right">{results.latency.p2_5}</TableCell>
+                            <TableCell align="right">{results.latency.p50}</TableCell>
+                            <TableCell align="right">{results.latency.p97_5}</TableCell>
+                            <TableCell align="right">{results.latency.average}</TableCell>
+                            <TableCell align="right">{results.latency.stddev}</TableCell>
+                            <TableCell align="right">{results.latency.min}</TableCell>
+                        </TableRow>
+                    </TableBody>
+                </Table>
+
+                <ResultsLabel variant="subtitle1">
+                    { results.non2xx && (
+                        <>
+                            {results["2XX"]} 2xx responses, {results.non2xx} responses: {results["1XX"]} 1xx {results["3XX"]} 3xx {results["4XX"]} 4xx {results["5XX"]} 5xx <br />
+                        </>
+                    )}
+                    {results.requests.sent} requests in {results.duration}, {prettyBytes(results.throughput.total)} read <br />
+
+                    {results.errors && (
+                        <>
+                            {format(results.errors)} errors ({format(results.timeouts)} timeouts) <br />
+                        </>
+                    )}
+                    {results.mismatches && (
+                        <>
+                            {format(results.mismatches)} requests with mismatched body <br />
+                        </>
+                    )}
+                    {results.resets && (
+                        <>
+                            Request pipeline was resetted {format(results.resets)} {results.resets === 1 ? 'time' : 'times'} <br />
+                        </>
+                    )}
+
+                </ResultsLabel>
             </Card>
         </>
     );

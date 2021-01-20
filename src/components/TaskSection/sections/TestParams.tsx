@@ -4,31 +4,36 @@ import Table from "../../Table/Table";
 import {Param, Task} from "../../../redux/types";
 import {useDispatch} from "react-redux";
 import * as projectActions from "../../../redux/actions";
+import {TestParams} from "../../../core/taskRunner/types";
 
 interface TestParamsProps {
     task: Task;
     projectId: string;
 }
 
-const initialTestParams: Param[] = [
+const initialTestParams: Param<TestParams>[] = [
     {
         key: 'duration',
-        value: '100'
+        value: 30
+    },
+    {
+        key: 'connections',
+        value: 100
     },
     {
         key: 'pipelining',
-        value: '1'
+        value: 1
     },
     {
-        key: 'duration',
-        value: '30'
+        key: 'timeout',
+        value: 10
     },
 ]
 
 const TestParams: React.FC<TestParamsProps> = ({ projectId, task }) => {
     const dispatch = useDispatch();
 
-    const handleOnChangeTestParams = (params: Param[]) => {
+    const handleOnChangeTestParams = (params: Param<TestParams>[]) => {
         const currentTask = {...task};
         currentTask.testParams = params;
         dispatch(projectActions.editTaskInProject(projectId, currentTask));
@@ -40,7 +45,7 @@ const TestParams: React.FC<TestParamsProps> = ({ projectId, task }) => {
 
     return (
         <SectionContainer>
-            <Table
+            <Table<TestParams>
                 data={task.testParams || initialTestParams}
                 onChange={handleOnChangeTestParams}
             />
