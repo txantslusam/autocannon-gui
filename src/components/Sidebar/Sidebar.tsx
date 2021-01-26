@@ -94,7 +94,7 @@ const NewProjectButton = styled(Button)`
   flex-direction: row;
   justify-content: flex-start;
   background-color: #e0e0e0;
-  width: 282px;
+  width: 300px;
   :hover {
     background-color: #d4d4d4;
   };
