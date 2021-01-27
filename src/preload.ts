@@ -16,6 +16,7 @@ declare global {
       readStoreFile: () => Project[];
       saveStoreToFile: (projects: Project[]) => void;
       onTaskProgressUpdate: (listener: (event: IpcRendererEvent, payload: TaskProgressActionPayload) => void) => void;
+      onAppClosed: (listener: (event: IpcRendererEvent) => void) => void;
     }
   }
 }
@@ -46,5 +47,12 @@ contextBridge.exposeInMainWorld('api', {
 
   onTaskProgressUpdate: (listener: (event: IpcRendererEvent, payload: TaskProgressActionPayload) => void) => {
     ipcRenderer.on(TASK_PROGRESS_UPDATE, listener);
+  },
+
+  onAppClosed: (listener: (event: IpcRendererEvent) => void) => {
+    ipcRenderer.on('app-close', (e) => {
+      listener(e);
+      ipcRenderer.send('closed');
+    });
   },
 });

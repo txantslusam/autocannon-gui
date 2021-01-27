@@ -12,6 +12,7 @@ import './index.css';
 import Layout from './components/Layout/Layout';
 import store from './redux/store';
 import { saveStoreToFile } from './utils/utls';
+import { cancelInProgressTasks } from './redux/thunks';
 
 const theme = createMuiTheme({
   palette: {
@@ -50,8 +51,13 @@ function render() {
 }
 
 store.subscribe(debounce(() => {
-  console.log(store.getState());
   saveStoreToFile(store.getState().project.projects);
 }, 1000));
+
+window.api.onAppClosed(() => {
+  // @ts-ignore
+  store.dispatch(cancelInProgressTasks());
+  saveStoreToFile(store.getState().project.projects);
+});
 
 render();

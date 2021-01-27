@@ -1,5 +1,4 @@
-import { app, BrowserWindow } from 'electron';
-import installExtension, { REDUX_DEVTOOLS, REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
+import { app, BrowserWindow, ipcMain } from 'electron';
 import './core/main';
 
 declare const MAIN_WINDOW_WEBPACK_ENTRY: any;
@@ -12,7 +11,8 @@ if (require('electron-squirrel-startup')) { // eslint-disable-line global-requir
 
 const createWindow = (): void => {
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
+  let status = 0;
+  let mainWindow = new BrowserWindow({
     height: 720,
     width: 1280,
     webPreferences: {
@@ -25,8 +25,24 @@ const createWindow = (): void => {
   // and load the index.html of the app.
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
+  mainWindow.on('close', (e) => {
+    if (status === 0) {
+      if (mainWindow) {
+        e.preventDefault();
+        mainWindow.webContents.send('app-close');
+      }
+    }
+  });
+
+  ipcMain.on('closed', (_) => {
+    status = 1;
+    mainWindow = null;
+    if (process.platform !== 'darwin') {
+      app.quit();
+    }
+  });
   // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  // mainWindow.webContents.openDevTools();
 };
 
 // This method will be called when Electron has finished

@@ -52,5 +52,10 @@ export async function run(event: IpcMainInvokeEvent, { task }: TaskRunnerParamet
         },
       }));
     });
+
+    ipcMain.on('closed', () => {
+      // @ts-ignore
+      instance.stop();
+    });
   });
 }
