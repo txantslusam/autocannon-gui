@@ -196,4 +196,9 @@ const TaskSection: React.FC = () => {
   );
 };
 
-export default TaskSection;
+const TaskSectionWrapper = () => {
+  const { taskId } = useParams<{ projectId: string, taskId: string }>();
+  return <TaskSection key={taskId} />;
+};
+
+export default TaskSectionWrapper;

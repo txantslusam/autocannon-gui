@@ -46,6 +46,7 @@ const TestParamsSection: React.FC<TestParamsProps> = ({ projectId, task }) => {
   return (
     <SectionContainer>
       <Table<TestParams>
+        key={task.id}
         data={task.testParams || initialTestParams}
         onChange={handleOnChangeTestParams}
       />

@@ -32,6 +32,10 @@ export const BarChart: React.FC<Props> = ({ data, title }) => {
 
     if (!ctx) return;
 
+    if (chartRef.current) {
+      chartRef.current.destroy();
+    }
+
     const colors = data.values.map((_, index) => (index === 0 ? '#f44336' : colorGenerator.next().value));
 
     chartRef.current = new Chart(canvasRef.current, {

@@ -52,6 +52,10 @@ export const HdrChart: React.FC<Props> = ({ data, title }) => {
 
     if (!ctx) return;
 
+    if (chartRef.current) {
+      chartRef.current.destroy();
+    }
+
     chartRef.current = new Chart(canvasRef.current, {
       type: 'line',
       data: {

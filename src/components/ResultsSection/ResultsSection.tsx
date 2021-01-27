@@ -98,4 +98,9 @@ const ResultsSection: React.FC = () => {
   );
 };
 
-export default ResultsSection;
+const ResultSectionWrapper = () => {
+  const { projectId } = useParams<{ projectId: string }>();
+  return <ResultsSection key={projectId} />;
+};
+
+export default ResultSectionWrapper;
